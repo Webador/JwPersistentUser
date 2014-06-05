@@ -22,6 +22,9 @@
     "autoload": {
         "psr-0": {
             "JwPersistentUser": "src/"
-        }
+        },
+        "classmap": [
+            "./Module.php"
+        ]
     }
 }
