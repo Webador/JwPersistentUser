@@ -1,0 +1,27 @@
+{
+    "name": "jouwweb/jw-persistent-user",
+    "description": "Extension to ZfcUser that keeps users logged on over time.",
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "zf2"
+    ],
+    "homepage": "https://github.com/JouwWeb/jw-persistent-user",
+    "authors": [
+        {
+            "name": "Roel van Duijnhoven",
+            "email": "roel@jouwweb.nl"
+        }
+    ],
+    "require": {
+        "zf-commons/zfc-user": "1.*"
+    },
+    "require-dev" : {
+        "phpunit/phpunit": "4.1.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "JwPersistentUser": "src/"
+        }
+    }
+}
