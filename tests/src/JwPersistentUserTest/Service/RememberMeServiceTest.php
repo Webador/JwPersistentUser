@@ -3,6 +3,7 @@
 namespace JwPersistentUserTest\Service;
 
 use JwPersistentUser\Model\SerieToken,
+    JwPersistentUser\Model\ModuleOptions,
     JwPersistentUser\Service\RememberMeService,
     JwPersistentUser\Mapper\SerieTokenMapperInterface;
 
@@ -18,6 +19,11 @@ class RememberMeServiceTest extends \PHPUnit_Framework_TestCase
      */
     protected $mapper;
 
+    /**
+     * @var ModuleOptions
+     */
+    protected $options;
+
     public function setUp()
     {
         parent::setUp();
@@ -26,6 +32,9 @@ class RememberMeServiceTest extends \PHPUnit_Framework_TestCase
 
         $this->mapper = $this->getMock('JwPersistentUser\Mapper\SerieTokenMapperInterface');
         $this->service->setMapper($this->mapper);
+
+        $this->service->setModuleOptions($this->options = new ModuleOptions);
+        $this->options->setSerieTokenEntityClass('JwPersistentUser\Model\SerieToken');
     }
 
     public function testCreateNew()

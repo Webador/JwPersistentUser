@@ -2,24 +2,24 @@
 
 namespace JwPersistentUser\Mapper;
 
-use JwPersistentUser\Model\SerieToken;
+use JwPersistentUser\Model\SerieTokenInterface;
 
 interface SerieTokenMapperInterface
 {
     /**
-     * @param SerieToken $token
+     * @param SerieTokenInterface $token
      */
-    public function persist(SerieToken $token);
+    public function persist(SerieTokenInterface $token);
 
     /**
      * @param int $userId
      * @param string $serieId
-     * @return SerieToken
+     * @return SerieTokenInterface
      */
     public function find($userId, $serieId);
 
     /**
-     * @param SerieToken $token
+     * @param SerieTokenInterface $token
      */
-    public function remove(SerieToken $token);
+    public function remove(SerieTokenInterface $token);
 }

@@ -6,6 +6,7 @@ use JwPersistentUser\Model\SerieToken,
     JwPersistentUser\Service\RememberMeService,
     JwPersistentUser\Service\CookieAuthenticationService;
 
+use JwPersistentUser\Service\CookieService;
 use Zend\Http\Request,
     Zend\Http\Response,
     Zend\Http\Header\Cookie,
@@ -28,6 +29,11 @@ class CookieAuthenticationServiceTest extends \PHPUnit_Framework_TestCase
      */
     protected $authService;
 
+    /**
+     * @var CookieService
+     */
+    protected $cookieService;
+
     public function setUp()
     {
         parent::setUp();
@@ -39,6 +45,9 @@ class CookieAuthenticationServiceTest extends \PHPUnit_Framework_TestCase
 
         $this->rememberMeService = $this->getMock('JwPersistentUser\Service\RememberMeService');
         $this->service->setRememberMeService($this->rememberMeService);
+
+        $this->cookieService = $this->getMock('JwPersistentUser\Service\CookieService');
+        $this->service->setCookieService($this->cookieService);
     }
 
     public function testValidLogin()
@@ -46,31 +55,30 @@ class CookieAuthenticationServiceTest extends \PHPUnit_Framework_TestCase
         $request = new Request;
         $response = new Response;
 
-        // Request contains cookie
-        $cookies = new Cookie([
-            'JwPersistentUser' => '1:abc:def'
-        ]);
-        $headers = $request->getHeaders();
-        $headers->addHeader($cookies);
+        $serieTokenInCookie = new SerieToken(1, 'abc', 'def');
+        $newSerie = new SerieToken(1, 'abc', 'ghi');
 
+        // Request contains cookie
+        $this->cookieService->expects($this->once())
+            ->method('read')
+            ->with($request, $response)
+            ->will($this->returnValue($serieTokenInCookie));
+
+        // Response contains updated cookie
+        $this->cookieService->expects($this->once())
+            ->method('writeSerie')
+            ->with($response, $newSerie);
+
+        $newSerie->setExpiresAt(new \DateTime('+3 days'));
         $this->rememberMeService->expects($this->once())
             ->method('getNextInSerie')
-            ->will($this->returnValue($newSerie = new SerieToken(1, 'abc', 'ghi')));
-        $newSerie->setExpiresAt(new \DateTime('+3 days'));
+            ->with($serieTokenInCookie)
+            ->will($this->returnValue($newSerie));
 
         $this->authService->expects($this->once())
             ->method('authenticate');
         
         $this->service->loginFrom($request, $response);
-
-        // Cookie gets set
-        $this->assertTrue($response->getHeaders()->has('SetCookie'));
-        $cookie = $response->getHeaders()->get('SetCookie')->current();
-        $this->assertInstanceOf('Zend\Http\Header\SetCookie', $cookie);
-        $this->assertEquals('JwPersistentUser', $cookie->getName());
-        $this->assertEquals('1:abc:ghi', $cookie->getValue());
-        $this->assertDateTimeEquals(new \DateTime('+3 days'), new \DateTime($cookie->getExpires()));
-        $this->assertEquals('/', $cookie->getPath());
     }
 
     /**

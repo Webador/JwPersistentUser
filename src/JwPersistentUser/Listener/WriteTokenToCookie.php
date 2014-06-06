@@ -2,7 +2,7 @@
 
 namespace JwPersistentUser\Listener;
 
-use JwPersistentUser\Service\CookieMonster,
+use JwPersistentUser\Service\CookieService,
     JwPersistentUser\Service\RememberMeService;
 
 use Zend\Http\Request,
@@ -40,6 +40,11 @@ class WriteTokenToCookie implements SharedListenerAggregateInterface
      */
     protected $rememberMeService;
 
+    /**
+     * @var CookieService
+     */
+    protected $cookieService;
+
     public function attachShared(SharedEventManagerInterface $events)
     {
         $this->sharedListeners[] = $events->attach(
@@ -66,17 +71,7 @@ class WriteTokenToCookie implements SharedListenerAggregateInterface
 
         $serieToken = $this->getRememberMeService()->createNew($e->getIdentity());
 
-        // Log user agent
-        $headers = $this->getRequest()->getHeaders();
-        if ($headers->has('UserAgent')) {
-            $serieToken->setUserAgent($headers->get('UserAgent')->getFieldValue());
-        }
-
-        // Log IP address
-        $ipAddressService = new RemoteAddress();
-        $serieToken->setIpAddress($ipAddressService->getIpAddress());
-
-        CookieMonster::writeSerie($this->getResponse(), $serieToken);
+        $this->getCookieService()->writeSerie($this->getResponse(), $serieToken);
     }
 
     /**
@@ -88,12 +83,12 @@ class WriteTokenToCookie implements SharedListenerAggregateInterface
             return;
         }
 
-        $serieToken = CookieMonster::read($this->getRequest(), $this->getResponse());
+        $serieToken = $this->getCookieService()->read($this->getRequest(), $this->getResponse());
         if ($serieToken) {
             $this->getRememberMeService()->removeSerie($serieToken->getUserId(), $serieToken->getSerie());
         }
 
-        CookieMonster::writeNull($this->getResponse());
+        $this->getCookieService()->writeNull($this->getResponse());
     }
 
     /**
@@ -168,6 +163,27 @@ class WriteTokenToCookie implements SharedListenerAggregateInterface
     public function setRequest($request)
     {
         $this->request = $request;
+        return $this;
+    }
+
+    /**
+     * @return CookieService
+     */
+    public function getCookieService()
+    {
+        if ($this->cookieService === null) {
+            $this->cookieService = $this->getServiceLocator()->get('JwPersistentUser\Service\Cookie');
+        }
+        return $this->cookieService;
+    }
+
+    /**
+     * @param CookieService $cookieService
+     * @return $this
+     */
+    public function setCookieService($cookieService)
+    {
+        $this->cookieService = $cookieService;
         return $this;
     }
 }

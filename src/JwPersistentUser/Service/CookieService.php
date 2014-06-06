@@ -2,22 +2,28 @@
 
 namespace JwPersistentUser\Service;
 
-use JwPersistentUser\Model\SerieToken;
+use JwPersistentUser\Model\ModuleOptions,
+    JwPersistentUser\Model\SerieTokenInterface;
 
 use Zend\Http\Request,
     Zend\Http\Response,
     Zend\Http\Header\SetCookie;
 
-abstract class CookieMonster
+class CookieService
 {
     const COOKIE_NAME = 'JwPersistentUser';
 
     /**
+     * @var ModuleOptions
+     */
+    protected $moduleOptions;
+
+    /**
      * @param Request $request
      * @param Response|null $response
-     * @return SerieToken|null
+     * @return SerieTokenInterface|null
      */
-    public static function read(Request $request, Response $response = null)
+    public function read(Request $request, Response $response = null)
     {
         $cookie = $request->getCookie();
         if (!isset($cookie[self::COOKIE_NAME])) {
@@ -27,12 +33,13 @@ abstract class CookieMonster
         $parts = explode(':', $cookie[self::COOKIE_NAME]);
         if (!is_array($parts) || count($parts) !== 3) {
             if ($response) {
-                self::writeNull($response);
+                $this->writeNull($response);
             }
             return null;
         }
 
-        $serieToken = new SerieToken;
+        $serieTokenEntityClass = $this->getModuleOptions()->getSerieTokenEntityClass();
+        $serieToken = new $serieTokenEntityClass;
         return $serieToken
             ->setUserId($parts[0])
             ->setSerie($parts[1])
@@ -42,9 +49,9 @@ abstract class CookieMonster
     /**
      * @return SetCookie
      */
-    public static function writeNull(Response $response)
+    public function writeNull(Response $response)
     {
-        self::setCookie($response, new SetCookie(
+        $this->setCookie($response, new SetCookie(
             self::COOKIE_NAME,
             null,
             time()  - 3600,
@@ -53,17 +60,17 @@ abstract class CookieMonster
     }
 
     /**
-     * @param SerieToken $serieToken
+     * @param SerieTokenInterface $serieToken
      * @return SetCookie
      */
-    public static function writeSerie(Response $response, SerieToken $serieToken)
+    public function writeSerie(Response $response, SerieTokenInterface $serieToken)
     {
         $serieRepresentation =
                   $serieToken->getUserId() .
             ':' . $serieToken->getSerie() .
             ':' . $serieToken->getToken();
 
-        self::setCookie($response, new SetCookie(
+        $this->setCookie($response, new SetCookie(
             self::COOKIE_NAME,
             $serieRepresentation,
             $serieToken->getExpiresAt()->getTimestamp(),
@@ -78,5 +85,23 @@ abstract class CookieMonster
     protected static function setCookie(Response $response, SetCookie $cookie)
     {
         $response->getHeaders()->addHeader($cookie);
+    }
+
+    /**
+     * @return ModuleOptions
+     */
+    public function getModuleOptions()
+    {
+        return $this->moduleOptions;
+    }
+
+    /**
+     * @param ModuleOptions $moduleOptions
+     * @return $this
+     */
+    public function setModuleOptions($moduleOptions)
+    {
+        $this->moduleOptions = $moduleOptions;
+        return $this;
     }
 }

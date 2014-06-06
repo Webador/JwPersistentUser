@@ -3,7 +3,9 @@
 return [
     'service_manager' => [
         'factories' => [
-            'JwPersistentUser\Service\RememberMe' => 'JwPersistentUser\Service\RememberMeServiceFactory'
+            'JwPersistentUser\ModuleOptions' => 'JwPersistentUser\Model\ModuleOptionsFactory',
+            'JwPersistentUser\Service\RememberMe' => 'JwPersistentUser\Service\RememberMeServiceFactory',
+            'JwPersistentUser\Service\Cookie' => 'JwPersistentUser\Service\CookieServiceFactory',
         ],
     ],
 ];

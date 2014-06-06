@@ -2,7 +2,8 @@
 
 namespace JwPersistentUser\Service;
 
-use JwPersistentUser\Model\SerieToken,
+use JwPersistentUser\Model\ModuleOptions,
+    JwPersistentUser\Model\SerieTokenInterface,
     JwPersistentUser\Mapper\SerieTokenMapperInterface;
 
 use Zend\Math\Rand;
@@ -15,12 +16,19 @@ class RememberMeService
     protected $mapper;
 
     /**
+     * @var ModuleOptions
+     */
+    protected $moduleOptions;
+
+    /**
      * @param int $userId
-     * @return SerieToken
+     * @return SerieTokenInterface
      */
     public function createNew($userId)
     {
-        $serieToken = new SerieToken;
+        $serieTokenClass = $this->getModuleOptions()->getSerieTokenEntityClass();
+        $serieToken = new $serieTokenClass;
+
         $serieToken
             ->setUserId($userId)
             ->setSerie($this->generateRandom())
@@ -33,10 +41,10 @@ class RememberMeService
     }
 
     /**
-     * @param SerieToken $serieToken
-     * @return SerieToken|null
+     * @param SerieTokenInterface $serieToken
+     * @return SerieTokenInterface|null
      */
-    public function getNextInSerie(SerieToken $serieToken)
+    public function getNextInSerie(SerieTokenInterface $serieToken)
     {
         $matchingSerieToken = $this->getMapper()->find($serieToken->getUserId(), $serieToken->getSerie());
         if (!$matchingSerieToken) {
@@ -92,6 +100,24 @@ class RememberMeService
     public function setMapper($mapper)
     {
         $this->mapper = $mapper;
+        return $this;
+    }
+
+    /**
+     * @return ModuleOptions
+     */
+    public function getModuleOptions()
+    {
+        return $this->moduleOptions;
+    }
+
+    /**
+     * @param ModuleOptions $moduleOptions
+     * @return $this
+     */
+    public function setModuleOptions($moduleOptions)
+    {
+        $this->moduleOptions = $moduleOptions;
         return $this;
     }
 }

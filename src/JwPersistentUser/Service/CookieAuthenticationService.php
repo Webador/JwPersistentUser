@@ -31,6 +31,11 @@ class CookieAuthenticationService
     protected $rememberMeService;
 
     /**
+     * @var CookieService
+     */
+    protected $cookieService;
+
+    /**
      * @param RequestInterface $request
      * @param ResponseInterface $response
      */
@@ -40,7 +45,7 @@ class CookieAuthenticationService
             return;
         }
 
-        $serieToken = CookieMonster::read($request, $response);
+        $serieToken = $this->getCookieService()->read($request, $response);
         if (!$serieToken) {
             return;
         }
@@ -58,7 +63,7 @@ class CookieAuthenticationService
             return;
         }
 
-        CookieMonster::writeSerie($response, $nextSerieToken);
+        $this->getCookieService()->writeSerie($response, $nextSerieToken);
 
         $this->getAuthService()->authenticate(new ForceLogin($nextSerieToken->getUserId()));
     }
@@ -70,7 +75,7 @@ class CookieAuthenticationService
     {
         $this->getAuthService()->clearIdentity();
 
-        CookieMonster::writeNull($response);
+        $this->getCookieService()->writeNull($response);
     }
 
     /**
@@ -114,6 +119,27 @@ class CookieAuthenticationService
     public function setRememberMeService($rememberMeService)
     {
         $this->rememberMeService = $rememberMeService;
+        return $this;
+    }
+
+    /**
+     * @return CookieService
+     */
+    public function getCookieService()
+    {
+        if ($this->cookieService === null) {
+            $this->cookieService = $this->getServiceLocator()->get('JwPersistentUser\Service\Cookie');
+        }
+        return $this->cookieService;
+    }
+
+    /**
+     * @param CookieService $cookieService
+     * @return $this
+     */
+    public function setCookieService($cookieService)
+    {
+        $this->cookieService = $cookieService;
         return $this;
     }
 }

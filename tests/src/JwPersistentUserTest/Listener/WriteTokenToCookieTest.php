@@ -6,6 +6,7 @@ use JwPersistentUser\Model\SerieToken,
     JwPersistentUser\Service\RememberMeService,
     JwPersistentUser\Listener\WriteTokenToCookie;
 
+use JwPersistentUser\Service\CookieService;
 use Zend\Http\Request,
     Zend\Http\Response,
     Zend\Http\Header\Cookie;
@@ -23,6 +24,11 @@ class WriteToCookieTest extends \PHPUnit_Framework_TestCase
      * @var RememberMeService
      */
     protected $rememberMeService;
+
+    /**
+     * @var CookieService
+     */
+    protected $cookieService;
 
     /**
      * @var Request
@@ -45,6 +51,9 @@ class WriteToCookieTest extends \PHPUnit_Framework_TestCase
 
         $this->rememberMeService = $this->getMock('JwPersistentUser\Service\RememberMeService');
         $this->listener->setRememberMeService($this->rememberMeService);
+
+        $this->cookieService = $this->getMock('JwPersistentUser\Service\CookieService');
+        $this->listener->setCookieService($this->cookieService);
     }
 
     /**
@@ -86,40 +95,29 @@ class WriteToCookieTest extends \PHPUnit_Framework_TestCase
             ->with(3)
             ->will($this->returnValue($returnToken));
 
-        $this->listener->authenticate($event);
+        $this->cookieService->expects($this->once())
+            ->method('writeSerie')
+            ->with($this->response, $returnToken);
 
-        // Cookie gets set
-        $this->assertTrue($this->response->getHeaders()->has('SetCookie'));
-        $cookie = $this->response->getHeaders()->get('SetCookie')->current();
-        $this->assertInstanceOf('Zend\Http\Header\SetCookie', $cookie);
-        $this->assertEquals('JwPersistentUser', $cookie->getName());
-        $this->assertEquals('3:abc:def', $cookie->getValue());
-        $this->assertDateTimeEquals(new \DateTime('+3 days'), new \DateTime($cookie->getExpires()));
-        $this->assertEquals('/', $cookie->getPath());
+        $this->listener->authenticate($event);
     }
 
     public function testLogout()
     {
-        // Request contains cookie
-        $cookies = new Cookie([
-            'JwPersistentUser' => '1:abc:def'
-        ]);
-        $headers = $this->request->getHeaders();
-        $headers->addHeader($cookies);
+        $this->cookieService->expects($this->once())
+            ->method('read')
+            ->with($this->request, $this->response)
+            ->will($this->returnValue(new SerieToken(1, 'abc', 'def')));
 
-        // Mentioned session is removed
         $this->rememberMeService->expects($this->once())
             ->method('removeSerie')
             ->with(1, 'abc');
 
-        $this->listener->logout(new AdapterChainEvent);
+        $this->cookieService->expects($this->once())
+            ->method('writeNull')
+            ->with($this->response);
 
-        // Cookies gets deleted
-        $this->assertTrue($this->response->getHeaders()->has('SetCookie'));
-        $cookie = $this->response->getHeaders()->get('SetCookie')->current();
-        $this->assertInstanceOf('Zend\Http\Header\SetCookie', $cookie);
-        $this->assertEquals('JwPersistentUser', $cookie->getName());
-        $this->assertDateTimeEquals(new \DateTime('-3600 seconds'), new \DateTime($cookie->getExpires()));
+        $this->listener->logout(new AdapterChainEvent);
     }
 
     public function methods()
