@@ -25,6 +25,11 @@ class SerieToken implements SerieTokenInterface
     protected $expiresAt;
 
     /**
+     * @var string
+     */
+    protected $ipAddress;
+
+    /**
      * @param null|int $userId
      * @param null|string $serie
      * @param null|string $token
@@ -78,6 +83,24 @@ class SerieToken implements SerieTokenInterface
     public function setExpiresAt($expiresAt)
     {
         $this->expiresAt = $expiresAt;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIpAddress()
+    {
+        return $this->ipAddress;
+    }
+
+    /**
+     * @param string $ipAddress
+     * @return $this
+     */
+    public function setIpAddress($ipAddress)
+    {
+        $this->ipAddress = $ipAddress;
         return $this;
     }
 }

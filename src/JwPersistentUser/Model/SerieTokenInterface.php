@@ -8,6 +8,7 @@ interface SerieTokenInterface
      * @return string
      */
     public function getSerie();
+
     /**
      * @param string $serie
      * @return $this
@@ -40,9 +41,21 @@ interface SerieTokenInterface
      * @return \DateTime
      */
     public function getExpiresAt();
+
     /**
      * @param \DateTime $expiresAt
      * @return $this
      */
     public function setExpiresAt($expiresAt);
+
+    /**
+     * @return string
+     */
+    public function getIpAddress();
+
+    /**
+     * @param $ipAddress
+     * @return string
+     */
+    public function setIpAddress($ipAddress);
 }
