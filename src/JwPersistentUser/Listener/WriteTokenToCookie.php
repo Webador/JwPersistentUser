@@ -9,7 +9,6 @@ use Zend\Http\Request,
     Zend\Http\Response,
     Zend\Stdlib\RequestInterface,
     Zend\Stdlib\ResponseInterface,
-    Zend\Http\PhpEnvironment\RemoteAddress,
     Zend\ServiceManager\ServiceLocatorAwareTrait,
     Zend\EventManager\SharedEventManagerInterface,
     Zend\EventManager\SharedListenerAggregateInterface;
