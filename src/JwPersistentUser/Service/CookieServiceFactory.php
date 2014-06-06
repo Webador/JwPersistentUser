@@ -11,7 +11,7 @@ class CookieServiceFactory implements FactoryInterface
     {
         $service = new CookieService;
 
-        $service->setModuleOptions($service->get('JwPersistentUser\ModuleOptions'));
+        $service->setModuleOptions($serviceLocator->get('JwPersistentUser\ModuleOptions'));
 
         return $service;
     }
