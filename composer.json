@@ -14,6 +14,7 @@
         }
     ],
     "require": {
+        "php": ">=5.4",
         "zf-commons/zfc-user": "1.*"
     },
     "require-dev" : {
