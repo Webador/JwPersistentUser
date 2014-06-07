@@ -2,16 +2,16 @@
 
 namespace JwPersistentUser\Listener;
 
-use JwPersistentUser\Service\CookieService,
-    JwPersistentUser\Service\RememberMeService;
+use JwPersistentUser\Service\CookieService;
+use JwPersistentUser\Service\RememberMeService;
 
-use Zend\Http\Request,
-    Zend\Http\Response,
-    Zend\Stdlib\RequestInterface,
-    Zend\Stdlib\ResponseInterface,
-    Zend\ServiceManager\ServiceLocatorAwareTrait,
-    Zend\EventManager\SharedEventManagerInterface,
-    Zend\EventManager\SharedListenerAggregateInterface;
+use Zend\Http\Request;
+use Zend\Http\Response;
+use Zend\Stdlib\RequestInterface;
+use Zend\Stdlib\ResponseInterface;
+use Zend\ServiceManager\ServiceLocatorAwareTrait;
+use Zend\EventManager\SharedEventManagerInterface;
+use Zend\EventManager\SharedListenerAggregateInterface;
 
 use ZfcUser\Authentication\Adapter\AdapterChainEvent;
 

@@ -4,12 +4,12 @@ namespace JwPersistentUser\Service;
 
 use JwPersistentUser\Authentication\Adapter\ForceLogin;
 
-use Zend\Http\Request,
-    Zend\Http\Response,
-    Zend\Stdlib\RequestInterface,
-    Zend\Stdlib\ResponseInterface,
-    Zend\Authentication\AuthenticationService,
-    Zend\ServiceManager\ServiceLocatorAwareTrait;
+use Zend\Http\Request;
+use Zend\Http\Response;
+use Zend\Stdlib\RequestInterface;
+use Zend\Stdlib\ResponseInterface;
+use Zend\Authentication\AuthenticationService;
+use Zend\ServiceManager\ServiceLocatorAwareTrait;
 
 /**
  * Note that dependencies in this service are pulled directory out of the service locator for

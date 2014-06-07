@@ -2,15 +2,14 @@
 
 namespace JwPersistentUserTest\Service;
 
-use JwPersistentUser\Model\SerieToken,
-    JwPersistentUser\Service\RememberMeService,
-    JwPersistentUser\Service\CookieAuthenticationService;
-
+use JwPersistentUser\Model\SerieToken;
 use JwPersistentUser\Service\CookieService;
-use Zend\Http\Request,
-    Zend\Http\Response,
-    Zend\Http\Header\Cookie,
-    Zend\Authentication\AuthenticationServiceInterface;
+use JwPersistentUser\Service\RememberMeService;
+use JwPersistentUser\Service\CookieAuthenticationService;
+
+use Zend\Http\Request;
+use Zend\Http\Response;
+use Zend\Authentication\AuthenticationServiceInterface;
 
 class CookieAuthenticationServiceTest extends \PHPUnit_Framework_TestCase
 {
@@ -97,6 +96,10 @@ class CookieAuthenticationServiceTest extends \PHPUnit_Framework_TestCase
 
         $diff = abs($expected->getTimestamp() - $actual->getTimestamp());
 
-        $this->assertLessThan($threshold, $diff, 'Date objects differ too much (' . $diff . ' seconds, treshold is ' . $threshold . ')');
+        $this->assertLessThan(
+            $threshold,
+            $diff,
+            'Date objects differ too much (' . $diff . ' seconds, treshold is ' . $threshold . ')'
+        );
     }
 }

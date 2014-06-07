@@ -2,14 +2,13 @@
 
 namespace JwPersistentUserTest\Listener;
 
-use JwPersistentUser\Model\SerieToken,
-    JwPersistentUser\Service\RememberMeService,
-    JwPersistentUser\Listener\WriteTokenToCookie;
-
+use JwPersistentUser\Model\SerieToken;
 use JwPersistentUser\Service\CookieService;
-use Zend\Http\Request,
-    Zend\Http\Response,
-    Zend\Http\Header\Cookie;
+use JwPersistentUser\Service\RememberMeService;
+use JwPersistentUser\Listener\WriteTokenToCookie;
+
+use Zend\Http\Request;
+use Zend\Http\Response;
 
 use ZfcUser\Authentication\Adapter\AdapterChainEvent;
 
@@ -144,6 +143,10 @@ class WriteToCookieTest extends \PHPUnit_Framework_TestCase
 
         $diff = abs($expected->getTimestamp() - $actual->getTimestamp());
 
-        $this->assertLessThan($threshold, $diff, 'Date objects differ too much (' . $diff . ' seconds, treshold is ' . $threshold . ')');
+        $this->assertLessThan(
+            $threshold,
+            $diff,
+            'Date objects differ too much (' . $diff . ' seconds, treshold is ' . $threshold . ')'
+        );
     }
 }

@@ -2,9 +2,9 @@
 
 namespace JwPersistentUser\Service;
 
-use JwPersistentUser\Model\ModuleOptions,
-    JwPersistentUser\Model\SerieTokenInterface,
-    JwPersistentUser\Mapper\SerieTokenMapperInterface;
+use JwPersistentUser\Model\ModuleOptions;
+use JwPersistentUser\Model\SerieTokenInterface;
+use JwPersistentUser\Mapper\SerieTokenMapperInterface;
 
 use Zend\Math\Rand;
 
@@ -49,9 +49,9 @@ class RememberMeService
         $matchingSerieToken = $this->getMapper()->find($serieToken->getUserId(), $serieToken->getSerie());
         if (!$matchingSerieToken) {
             return null;
-        } else if (!$matchingSerieToken->getExpiresAt() || $matchingSerieToken->getExpiresAt() < new \DateTime) {
+        } elseif (!$matchingSerieToken->getExpiresAt() || $matchingSerieToken->getExpiresAt() < new \DateTime) {
             return null;
-        } else if ($matchingSerieToken->getToken() !== $serieToken->getToken()) {
+        } elseif ($matchingSerieToken->getToken() !== $serieToken->getToken()) {
             $this->removeSerie($serieToken->getUserId(), $serieToken->getSerie());
             return null;
         }

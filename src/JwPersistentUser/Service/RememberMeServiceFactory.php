@@ -2,8 +2,8 @@
 
 namespace JwPersistentUser\Service;
 
-use Zend\ServiceManager\FactoryInterface,
-    Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 class RememberMeServiceFactory implements FactoryInterface
 {

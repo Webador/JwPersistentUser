@@ -2,12 +2,12 @@
 
 namespace JwPersistentUser\Service;
 
-use JwPersistentUser\Model\ModuleOptions,
-    JwPersistentUser\Model\SerieTokenInterface;
+use JwPersistentUser\Model\ModuleOptions;
+use JwPersistentUser\Model\SerieTokenInterface;
 
-use Zend\Http\Request,
-    Zend\Http\Response,
-    Zend\Http\Header\SetCookie;
+use Zend\Http\Request;
+use Zend\Http\Response;
+use Zend\Http\Header\SetCookie;
 
 class CookieService
 {

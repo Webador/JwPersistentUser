@@ -4,8 +4,8 @@ namespace JwPersistentUser\Authentication\Adapter;
 
 use ZfcUser\Entity\UserInterface;
 
-use Zend\Authentication\Result,
-    Zend\Authentication\Adapter\AdapterInterface;
+use Zend\Authentication\Result;
+use Zend\Authentication\Adapter\AdapterInterface;
 
 class ForceLogin implements AdapterInterface
 {
@@ -17,7 +17,7 @@ class ForceLogin implements AdapterInterface
     /**
      * @param UserInterface|int $user
      */
-    function __construct($user)
+    public function __construct($user)
     {
         $this->user = $user;
     }

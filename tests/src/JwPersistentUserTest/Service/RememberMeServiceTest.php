@@ -2,10 +2,10 @@
 
 namespace JwPersistentUserTest\Service;
 
-use JwPersistentUser\Model\SerieToken,
-    JwPersistentUser\Model\ModuleOptions,
-    JwPersistentUser\Service\RememberMeService,
-    JwPersistentUser\Mapper\SerieTokenMapperInterface;
+use JwPersistentUser\Model\SerieToken;
+use JwPersistentUser\Model\ModuleOptions;
+use JwPersistentUser\Service\RememberMeService;
+use JwPersistentUser\Mapper\SerieTokenMapperInterface;
 
 class RememberMeServiceTest extends \PHPUnit_Framework_TestCase
 {
