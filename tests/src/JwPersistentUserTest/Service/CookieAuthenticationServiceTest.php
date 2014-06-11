@@ -76,6 +76,12 @@ class CookieAuthenticationServiceTest extends \PHPUnit_Framework_TestCase
 
         $this->authService->expects($this->once())
             ->method('authenticate');
+
+        $eventManager = $this->getMock('Zend\EventManager\EventManagerInterface');
+        $this->service->setEventManager($eventManager);
+        $eventManager->expects($this->once())
+            ->method('trigger')
+            ->with('login', $this->service, ['token' => $newSerie]);
         
         $this->service->loginFrom($request, $response);
     }

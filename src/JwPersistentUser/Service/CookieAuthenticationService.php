@@ -8,6 +8,7 @@ use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
+use Zend\EventManager\EventManagerAwareTrait;
 use Zend\Authentication\AuthenticationService;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
 
@@ -18,7 +19,8 @@ use Zend\ServiceManager\ServiceLocatorAwareTrait;
  */
 class CookieAuthenticationService
 {
-    use ServiceLocatorAwareTrait;
+    use EventManagerAwareTrait,
+        ServiceLocatorAwareTrait;
 
     /**
      * @var AuthenticationService
@@ -66,6 +68,10 @@ class CookieAuthenticationService
         $this->getCookieService()->writeSerie($response, $nextSerieToken);
 
         $this->getAuthService()->authenticate(new ForceLogin($nextSerieToken->getUserId()));
+
+        $this->getEventManager()->trigger('login', $this, [
+            'token' => $nextSerieToken,
+        ]);
     }
 
     /**
