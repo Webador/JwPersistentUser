@@ -54,8 +54,8 @@ interface SerieTokenInterface
     public function getIpAddress();
 
     /**
-     * @param $ipAddress
-     * @return string
+     * @param string $ipAddress
+     * @return $this
      */
     public function setIpAddress($ipAddress);
 
