@@ -41,10 +41,9 @@ class SerieToken implements SerieTokenInterface
      */
     public function __construct($userId = null, $serie = null, $token = null)
     {
-        $this
-            ->setUserId($userId)
-            ->setSerie($serie)
-            ->setToken($token);
+        $this->setUserId($userId);
+        $this->setSerie($serie);
+        $this->setToken($token);
     }
 
     public function getSerie()
@@ -55,7 +54,6 @@ class SerieToken implements SerieTokenInterface
     public function setSerie($serie)
     {
         $this->serie = $serie;
-        return $this;
     }
 
     public function getToken()
@@ -66,7 +64,6 @@ class SerieToken implements SerieTokenInterface
     public function setToken($token)
     {
         $this->token = $token;
-        return $this;
     }
 
     public function getUserId()
@@ -77,7 +74,6 @@ class SerieToken implements SerieTokenInterface
     public function setUserId($userId)
     {
         $this->userId = $userId;
-        return $this;
     }
 
     public function getExpiresAt()
@@ -88,7 +84,6 @@ class SerieToken implements SerieTokenInterface
     public function setExpiresAt($expiresAt)
     {
         $this->expiresAt = $expiresAt;
-        return $this;
     }
 
     public function getIpAddress()
@@ -99,13 +94,11 @@ class SerieToken implements SerieTokenInterface
     public function setIpAddress($ipAddress)
     {
         $this->ipAddress = $ipAddress;
-        return $this;
     }
 
     public function setUserAgent($userAgent)
     {
         $this->userAgent = $userAgent;
-        return $this;
     }
 
     public function getUserAgent()

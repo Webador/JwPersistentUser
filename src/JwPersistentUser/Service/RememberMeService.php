@@ -42,12 +42,11 @@ class RememberMeService
         $serieToken = new $serieTokenClass;
 
         /** @var $serieToken SerieTokenInterface */
-        $serieToken
-            ->setUserId($userId)
-            ->setSerie($this->generateRandom())
-            ->setToken($this->generateRandom())
-            ->setExpiresAt(new \DateTime('+1 year'))
-            ->setIpAddress($this->getIpService()->getIpAddress());
+        $serieToken->setUserId($userId);
+        $serieToken->setSerie($this->generateRandom());
+        $serieToken->setToken($this->generateRandom());
+        $serieToken->setExpiresAt(new \DateTime('+1 year'));
+        $serieToken->setIpAddress($this->getIpService()->getIpAddress());
 
         $userAgentHeader = $this->getRequest()->getHeader('UserAgent');
         if ($userAgentHeader !== false) {

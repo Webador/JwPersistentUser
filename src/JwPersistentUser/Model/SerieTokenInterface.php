@@ -11,7 +11,6 @@ interface SerieTokenInterface
 
     /**
      * @param string $serie
-     * @return $this
      */
     public function setSerie($serie);
 
@@ -22,7 +21,6 @@ interface SerieTokenInterface
 
     /**
      * @param string $token
-     * @return $this
      */
     public function setToken($token);
 
@@ -32,8 +30,7 @@ interface SerieTokenInterface
     public function getUserId();
 
     /**
-     * @param mixed $userId
-     * @return $this
+     * @param int $userId
      */
     public function setUserId($userId);
 
@@ -44,7 +41,6 @@ interface SerieTokenInterface
 
     /**
      * @param \DateTime $expiresAt
-     * @return $this
      */
     public function setExpiresAt($expiresAt);
 
@@ -55,7 +51,6 @@ interface SerieTokenInterface
 
     /**
      * @param string $ipAddress
-     * @return $this
      */
     public function setIpAddress($ipAddress);
 
@@ -66,7 +61,6 @@ interface SerieTokenInterface
 
     /**
      * @param string $userAgent
-     * @return $this
      */
     public function setUserAgent($userAgent);
 }
