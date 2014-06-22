@@ -58,4 +58,15 @@ interface SerieTokenInterface
      * @return string
      */
     public function setIpAddress($ipAddress);
+
+    /**
+     * @return string
+     */
+    public function getUserAgent();
+
+    /**
+     * @param string $userAgent
+     * @return $this
+     */
+    public function setUserAgent($userAgent);
 }

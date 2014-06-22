@@ -30,6 +30,11 @@ class SerieToken implements SerieTokenInterface
     protected $ipAddress;
 
     /**
+     * @var string
+     */
+    protected $userAgent;
+
+    /**
      * @param null|int $userId
      * @param null|string $serie
      * @param null|string $token
@@ -86,21 +91,25 @@ class SerieToken implements SerieTokenInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getIpAddress()
     {
         return $this->ipAddress;
     }
 
-    /**
-     * @param string $ipAddress
-     * @return $this
-     */
     public function setIpAddress($ipAddress)
     {
         $this->ipAddress = $ipAddress;
         return $this;
+    }
+
+    public function setUserAgent($userAgent)
+    {
+        $this->userAgent = $userAgent;
+        return $this;
+    }
+
+    public function getUserAgent()
+    {
+        return $this->userAgent;
     }
 }
