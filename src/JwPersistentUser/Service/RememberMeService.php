@@ -7,9 +7,15 @@ use JwPersistentUser\Model\SerieTokenInterface;
 use JwPersistentUser\Mapper\SerieTokenMapperInterface;
 
 use Zend\Math\Rand;
+use Zend\Http\PhpEnvironment\RemoteAddress;
 
 class RememberMeService
 {
+    /**
+     * @var RemoteAddress
+     */
+    protected $ipService;
+
     /**
      * @var SerieTokenMapperInterface
      */
@@ -29,11 +35,13 @@ class RememberMeService
         $serieTokenClass = $this->getModuleOptions()->getSerieTokenEntityClass();
         $serieToken = new $serieTokenClass;
 
+        /** @var $serieToken SerieTokenInterface */
         $serieToken
             ->setUserId($userId)
             ->setSerie($this->generateRandom())
             ->setToken($this->generateRandom())
-            ->setExpiresAt(new \DateTime('+1 year'));
+            ->setExpiresAt(new \DateTime('+1 year'))
+            ->setIpAddress($this->getIpService()->getIpAddress());
 
         $this->getMapper()->persist($serieToken);
 
@@ -119,5 +127,23 @@ class RememberMeService
     {
         $this->moduleOptions = $moduleOptions;
         return $this;
+    }
+
+    /**
+     * @param RemoteAddress $ipService
+     * @return $this
+     */
+    public function setIpService($ipService)
+    {
+        $this->ipService = $ipService;
+        return $this;
+    }
+
+    /**
+     * @return RemoteAddress
+     */
+    public function getIpService()
+    {
+        return $this->ipService;
     }
 }

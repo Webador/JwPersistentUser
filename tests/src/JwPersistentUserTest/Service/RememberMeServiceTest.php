@@ -9,6 +9,8 @@ use JwPersistentUser\Mapper\SerieTokenMapperInterface;
 
 class RememberMeServiceTest extends \PHPUnit_Framework_TestCase
 {
+    const IP = '1.2.3.4';
+
     /**
      * @var RememberMeService
      */
@@ -35,6 +37,12 @@ class RememberMeServiceTest extends \PHPUnit_Framework_TestCase
 
         $this->service->setModuleOptions($this->options = new ModuleOptions);
         $this->options->setSerieTokenEntityClass('JwPersistentUser\Model\SerieToken');
+
+        $ipService = $this->getMock('Zend\Http\PhpEnvironment\RemoteAddress');
+        $ipService->expects($this->any())
+            ->method('getIpAddress')
+            ->will($this->returnValue(self::IP));
+        $this->service->setIpService($ipService);
     }
 
     public function testCreateNew()
@@ -47,6 +55,7 @@ class RememberMeServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(3, $response->getUserId());
         $this->assertEquals(10, strlen($response->getSerie()));
         $this->assertEquals(10, strlen($response->getToken()));
+        $this->assertEquals(self::IP, $response->getIpAddress());
     }
 
     public function testRemoveSerie()
