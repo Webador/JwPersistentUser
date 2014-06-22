@@ -18,6 +18,10 @@ class ModuleOptionsFactory implements FactoryInterface
             $options->setFromArray($config[self::KEY]);
         }
 
+        if (!$options->getSerieTokenEntityClass()) {
+            $options->setSerieTokenEntityClass('JwPersistentUser\Model\SerieToken');
+        }
+
         return $options;
     }
 }
