@@ -40,10 +40,11 @@ class CookieService
 
         $serieTokenEntityClass = $this->getModuleOptions()->getSerieTokenEntityClass();
         $serieToken = new $serieTokenEntityClass;
-        return $serieToken
-            ->setUserId($parts[0])
-            ->setSerie($parts[1])
-            ->setToken($parts[2]);
+        $serieToken->setUserId($parts[0]);
+        $serieToken->setSerie($parts[1]);
+        $serieToken->setToken($parts[2]);
+
+        return $serieToken;
     }
 
     /**
