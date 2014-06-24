@@ -2,6 +2,7 @@
 
 namespace JwPersistentUserTest\Listener;
 
+use JwPersistentUser\Test\TestCase;
 use JwPersistentUser\Model\SerieToken;
 use JwPersistentUser\Service\CookieService;
 use JwPersistentUser\Service\RememberMeService;
@@ -12,7 +13,7 @@ use Zend\Http\Response;
 
 use ZfcUser\Authentication\Adapter\AdapterChainEvent;
 
-class WriteToCookieTest extends \PHPUnit_Framework_TestCase
+class WriteToCookieTest extends TestCase
 {
     /**
      * @var WriteTokenToCookie
@@ -125,28 +126,5 @@ class WriteToCookieTest extends \PHPUnit_Framework_TestCase
             ['authenticate'],
             ['logout'],
         ];
-    }
-
-    /**
-     * Assert that two dates do not differ more than $treshold seconds.
-     *
-     * This is a convenient method to test if dates are propably equal to each other.
-     *
-     * @param $expected
-     * @param $actual
-     * @param int $threshold
-     */
-    protected function assertDateTimeEquals($expected, $actual, $threshold = 10)
-    {
-        $this->assertInstanceOf('\DateTime', $expected);
-        $this->assertInstanceOf('\DateTime', $actual);
-
-        $diff = abs($expected->getTimestamp() - $actual->getTimestamp());
-
-        $this->assertLessThan(
-            $threshold,
-            $diff,
-            'Date objects differ too much (' . $diff . ' seconds, treshold is ' . $threshold . ')'
-        );
     }
 }

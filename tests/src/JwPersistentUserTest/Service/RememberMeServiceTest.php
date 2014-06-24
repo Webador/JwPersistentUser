@@ -2,13 +2,15 @@
 
 namespace JwPersistentUserTest\Service;
 
+use JwPersistentUser\Test\TestCase;
 use JwPersistentUser\Model\SerieToken;
 use JwPersistentUser\Model\ModuleOptions;
 use JwPersistentUser\Service\RememberMeService;
 use JwPersistentUser\Mapper\SerieTokenMapperInterface;
+
 use Zend\Http\Header\UserAgent;
 
-class RememberMeServiceTest extends \PHPUnit_Framework_TestCase
+class RememberMeServiceTest extends TestCase
 {
     const IP = '1.2.3.4';
     const USER_AGENT = 'Mozilla /w IE & Chrome';
