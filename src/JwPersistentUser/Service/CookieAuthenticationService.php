@@ -12,6 +12,8 @@ use Zend\EventManager\EventManagerAwareTrait;
 use Zend\Authentication\AuthenticationService;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
 
+use ZfcUser\Mapper\User as ZfcUserMapper;
+
 /**
  * Note that dependencies in this service are pulled directory out of the service locator for
  * a reason: performance. Would we NOT do this than we would instantiate those resources on
@@ -56,6 +58,12 @@ class CookieAuthenticationService
         //      the AuthService on every following request.
 
         if ($this->getAuthService()->hasIdentity()) {
+            return;
+        }
+
+        $user = $this->getUserMapper()->findById($serieToken->getUserId());
+        if (!$user) {
+            $this->invalidAttempt($response);
             return;
         }
 
@@ -147,5 +155,25 @@ class CookieAuthenticationService
     {
         $this->cookieService = $cookieService;
         return $this;
+    }
+
+    /**
+     * @return ZfcUserMapper
+     */
+    public function getUserMapper()
+    {
+        if ($this->userMapper === null) {
+            $this->userMapper = $this->getServiceLocator()->get('zfcuser_user_mapper');
+        }
+
+        return $this->userMapper;
+    }
+
+    /**
+     * @param ZfcUserMapper $mapper
+     */
+    public function setUserMapper(ZfcUserMapper $mapper)
+    {
+        $this->userMapper = $mapper;
     }
 }

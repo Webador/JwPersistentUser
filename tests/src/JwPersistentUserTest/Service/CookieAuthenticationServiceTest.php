@@ -12,6 +12,8 @@ use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\Authentication\AuthenticationServiceInterface;
 
+use ZfcUser\Mapper\User as ZfcUserMapper;
+
 class CookieAuthenticationServiceTest extends TestCase
 {
     /**
@@ -34,6 +36,11 @@ class CookieAuthenticationServiceTest extends TestCase
      */
     protected $cookieService;
 
+    /**
+     * @var ZfcUserMapper
+     */
+    protected $userMapper;
+
     public function setUp()
     {
         parent::setUp();
@@ -48,6 +55,9 @@ class CookieAuthenticationServiceTest extends TestCase
 
         $this->cookieService = $this->getMock('JwPersistentUser\Service\CookieService');
         $this->service->setCookieService($this->cookieService);
+        
+        $this->userMapper = $this->getMock('ZfcUser\Mapper\User');
+        $this->service->setUserMapper($this->userMapper);
     }
 
     public function testValidLogin()
@@ -57,6 +67,11 @@ class CookieAuthenticationServiceTest extends TestCase
 
         $serieTokenInCookie = new SerieToken(1, 'abc', 'def');
         $newSerie = new SerieToken(1, 'abc', 'ghi');
+
+        // Assume valid user
+        $this->userMapper->expects($this->once())
+            ->method('findById')
+            ->will($this->returnValue($this->getMock('ZfcUser\Entity\UserInterface')));
 
         // Request contains cookie
         $this->cookieService->expects($this->once())
