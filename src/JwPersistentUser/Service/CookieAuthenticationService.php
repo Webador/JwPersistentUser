@@ -40,6 +40,11 @@ class CookieAuthenticationService
     protected $cookieService;
 
     /**
+     * @var ZfcUserMapper
+     */
+    protected $userMapper;
+
+    /**
      * @param RequestInterface $request
      * @param ResponseInterface $response
      */
