@@ -55,7 +55,7 @@ class CookieAuthenticationServiceTest extends TestCase
 
         $this->cookieService = $this->getMock('JwPersistentUser\Service\CookieService');
         $this->service->setCookieService($this->cookieService);
-        
+
         $this->userMapper = $this->getMock('ZfcUser\Mapper\User');
         $this->service->setUserMapper($this->userMapper);
     }
