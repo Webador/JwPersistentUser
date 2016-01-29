@@ -10,7 +10,7 @@
    Model\SerieToken` model. One can however configure another model that implements this interface.
 
    For example:
-   ```
+   ```php
    <?php return [
        'jwpersistentuser' => [
            'serieTokenEntityClass' => 'User\Model\SerieToken'
@@ -21,7 +21,7 @@
 2. Now we need to tell how to store this data. Therefore a service needs to be registered in the service manager. This service needs to implement `JwPersistentUser\Mapper\SerieTokenMapperInterface` and be registered under under `JwPersistentUser\Mapper\SerieToken` in the service manager.
 
    For example:
-   ```
+   ```php
    <?php return [
        'service_manager' => [
            'JwPersistentUser\Mapper\SerieToken' => 'User\DatabaseSerieTokenMapper'
