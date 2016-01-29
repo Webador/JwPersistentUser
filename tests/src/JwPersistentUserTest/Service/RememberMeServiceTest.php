@@ -91,6 +91,8 @@ class RememberMeServiceTest extends TestCase
 
         $this->assertSame($serie, $nextSerie);
         $this->assertNotEquals('def', $serie->getToken());
+
+        $this->assertDateTimeEquals(new \DateTime('+1 year'), $serie->getExpiresAt());
     }
 
     public function testSerieExpired()
