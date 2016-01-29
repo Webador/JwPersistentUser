@@ -45,7 +45,7 @@ class RememberMeService
         $serieToken->setUserId($userId);
         $serieToken->setSerie($this->generateRandom());
         $serieToken->setToken($this->generateRandom());
-        $serieToken->setExpiresAt(new \DateTime('+1 year'));
+        $serieToken->setExpiresAt($this->getNewExpireDate());
         $serieToken->setIpAddress($this->getIpService()->getIpAddress());
 
         $userAgentHeader = $this->getRequest()->getHeader('UserAgent');
@@ -78,9 +78,18 @@ class RememberMeService
 
         // Generate new token in the serie
         $matchingSerieToken->setToken($this->generateRandom());
+        $matchingSerieToken->setExpiresAt($this->getNewExpireDate());
         $this->getMapper()->persist($matchingSerieToken);
 
         return $matchingSerieToken;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    protected function getNewExpireDate()
+    {
+        return new \DateTime('+1 year');
     }
 
     /**
