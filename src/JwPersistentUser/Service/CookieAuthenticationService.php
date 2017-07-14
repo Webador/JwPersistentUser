@@ -6,11 +6,11 @@ use JwPersistentUser\Authentication\Adapter\ForceLogin;
 
 use Zend\Http\Request;
 use Zend\Http\Response;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 use Zend\EventManager\EventManagerAwareTrait;
 use Zend\Authentication\AuthenticationService;
-use Zend\ServiceManager\ServiceLocatorAwareTrait;
 
 use ZfcUser\Mapper\User as ZfcUserMapper;
 
@@ -21,8 +21,12 @@ use ZfcUser\Mapper\User as ZfcUserMapper;
  */
 class CookieAuthenticationService
 {
-    use EventManagerAwareTrait,
-        ServiceLocatorAwareTrait;
+    use EventManagerAwareTrait;
+
+    /**
+     * @var ServiceLocatorInterface
+     */
+    protected $serviceLocator;
 
     /**
      * @var AuthenticationService
@@ -43,6 +47,14 @@ class CookieAuthenticationService
      * @var ZfcUserMapper
      */
     protected $userMapper;
+
+    /**
+     * @param ServiceLocatorInterface $serviceLocator
+     */
+    public function __construct(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+    }
 
     /**
      * @param RequestInterface $request
@@ -103,7 +115,7 @@ class CookieAuthenticationService
     public function getAuthService()
     {
         if ($this->authService === null) {
-            $this->authService = $this->getServiceLocator()->get('zfcuser_auth_service');
+            $this->authService = $this->serviceLocator->get('zfcuser_auth_service');
         }
 
         return $this->authService;
@@ -125,7 +137,7 @@ class CookieAuthenticationService
     public function getRememberMeService()
     {
         if ($this->rememberMeService === null) {
-            $this->rememberMeService = $this->getServiceLocator()->get('JwPersistentUser\Service\RememberMe');
+            $this->rememberMeService = $this->serviceLocator->get('JwPersistentUser\Service\RememberMe');
         }
 
         return $this->rememberMeService;
@@ -147,7 +159,7 @@ class CookieAuthenticationService
     public function getCookieService()
     {
         if ($this->cookieService === null) {
-            $this->cookieService = $this->getServiceLocator()->get('JwPersistentUser\Service\Cookie');
+            $this->cookieService = $this->serviceLocator->get('JwPersistentUser\Service\Cookie');
         }
         return $this->cookieService;
     }
@@ -168,7 +180,7 @@ class CookieAuthenticationService
     public function getUserMapper()
     {
         if ($this->userMapper === null) {
-            $this->userMapper = $this->getServiceLocator()->get('zfcuser_user_mapper');
+            $this->userMapper = $this->serviceLocator->get('zfcuser_user_mapper');
         }
 
         return $this->userMapper;

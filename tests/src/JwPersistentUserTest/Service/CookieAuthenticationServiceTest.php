@@ -45,7 +45,9 @@ class CookieAuthenticationServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->service = new CookieAuthenticationService;
+        $sl = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
+
+        $this->service = new CookieAuthenticationService($sl);
 
         $this->authService = $this->getMock('Zend\Authentication\AuthenticationServiceInterface');
         $this->service->setAuthService($this->authService);

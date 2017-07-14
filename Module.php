@@ -8,6 +8,7 @@ use JwPersistentUser\Listener\WriteTokenToCookie,
 use Zend\ModuleManager\Feature,
     Zend\EventManager\EventManager,
     Zend\EventManager\EventInterface;
+use Zend\ServiceManager\ServiceManager;
 
 class Module implements
     Feature\ConfigProviderInterface,
@@ -24,19 +25,14 @@ class Module implements
         /** @var EventManager $em */
         $em = $e->getApplication()->getEventManager();
 
+        /** @var ServiceManager $sm */
+        $sm = $e->getApplication()->getServiceManager();
+
         $request = $e->getApplication()->getRequest();
         $response = $e->getApplication()->getResponse();
 
-        // Write token to cookie after valid authentication
-        $placeCookie = new WriteTokenToCookie;
-        $placeCookie->setRequest($request);
-        $placeCookie->setResponse($response);
-        $placeCookie->setServiceLocator($e->getApplication()->getServiceManager());
-        $em->getSharedManager()->attachAggregate($placeCookie);
-
         // Try to login from Cookie if applicable
-        $service = new CookieAuthenticationService;
-        $service->setServiceLocator($e->getApplication()->getServiceManager());
+        $service = new CookieAuthenticationService($sm);
         $service->loginFrom($request, $response);
     }
 

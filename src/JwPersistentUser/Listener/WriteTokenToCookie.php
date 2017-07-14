@@ -2,27 +2,36 @@
 
 namespace JwPersistentUser\Listener;
 
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
 use JwPersistentUser\Service\CookieService;
 use JwPersistentUser\Service\RememberMeService;
 
+use Zend\EventManager\Event;
 use Zend\Http\Request;
 use Zend\Http\Response;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Zend\ServiceManager\Factory\DelegatorFactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
-use Zend\ServiceManager\ServiceLocatorAwareTrait;
 use Zend\EventManager\SharedEventManagerInterface;
-use Zend\EventManager\SharedListenerAggregateInterface;
 
+use ZfcUser\Authentication\Adapter\AdapterChain;
 use ZfcUser\Authentication\Adapter\AdapterChainEvent;
 
-class WriteTokenToCookie implements SharedListenerAggregateInterface
+class WriteTokenToCookie implements DelegatorFactoryInterface
 {
-    use ServiceLocatorAwareTrait;
-
     /**
      * @var []
      */
     protected $sharedListeners = [];
+
+    /**
+     * @var ContainerInterface
+     */
+    protected $serviceLocator;
 
     /**
      * @var RequestInterface
@@ -44,26 +53,30 @@ class WriteTokenToCookie implements SharedListenerAggregateInterface
      */
     protected $cookieService;
 
-    public function attachShared(SharedEventManagerInterface $events)
+    public function __invoke(ContainerInterface $container, $name, callable $callback, array $options = null)
     {
-        $this->sharedListeners[] = $events->attach(
-            'ZfcUser\Authentication\Adapter\AdapterChain',
+        $this->serviceLocator = $container;
+
+        /** @var AdapterChain $original */
+        $original = call_user_func($callback);
+
+        $original->getEventManager()->attach(
             'authenticate.success',
             [$this, 'authenticate']
         );
 
-        $this->sharedListeners[] = $events->attach(
-            'ZfcUser\Authentication\Adapter\AdapterChain',
+        $original->getEventManager()->attach(
             'logout',
             [$this, 'logout']
         );
+
+        return $original;
     }
 
-    /**
-     * @param AdapterChainEvent $e
-     */
-    public function authenticate(AdapterChainEvent $e)
+    public function authenticate(Event $e)
     {
+        $e = $e->getTarget();
+
         if (!$this->isValidRequestAndResponse()) {
             return;
         }
@@ -73,11 +86,10 @@ class WriteTokenToCookie implements SharedListenerAggregateInterface
         $this->getCookieService()->writeSerie($this->getResponse(), $serieToken);
     }
 
-    /**
-     * @param AdapterChainEvent $e
-     */
-    public function logout(AdapterChainEvent $e)
+    public function logout(Event $e)
     {
+        $e = $e->getTarget();
+
         if (!$this->isValidRequestAndResponse()) {
             return;
         }
@@ -114,7 +126,7 @@ class WriteTokenToCookie implements SharedListenerAggregateInterface
     public function getRememberMeService()
     {
         if ($this->rememberMeService === null) {
-            $this->rememberMeService = $this->getServiceLocator()->get('JwPersistentUser\Service\RememberMe');
+            $this->rememberMeService = $this->serviceLocator->get('JwPersistentUser\Service\RememberMe');
         }
         return $this->rememberMeService;
     }
@@ -134,6 +146,10 @@ class WriteTokenToCookie implements SharedListenerAggregateInterface
      */
     public function getResponse()
     {
+        if (!$this->response) {
+            $this->response = $this->serviceLocator->get('Response');
+        }
+
         return $this->response;
     }
 
@@ -152,6 +168,10 @@ class WriteTokenToCookie implements SharedListenerAggregateInterface
      */
     public function getRequest()
     {
+        if (!$this->request) {
+            $this->request = $this->serviceLocator->get('Request');
+        }
+
         return $this->request;
     }
 
@@ -171,7 +191,7 @@ class WriteTokenToCookie implements SharedListenerAggregateInterface
     public function getCookieService()
     {
         if ($this->cookieService === null) {
-            $this->cookieService = $this->getServiceLocator()->get('JwPersistentUser\Service\Cookie');
+            $this->cookieService = $this->serviceLocator->get('JwPersistentUser\Service\Cookie');
         }
         return $this->cookieService;
     }
