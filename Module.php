@@ -2,12 +2,10 @@
 
 namespace JwPersistentUser;
 
-use JwPersistentUser\Listener\WriteTokenToCookie,
-    JwPersistentUser\Service\CookieAuthenticationService;
-
-use Zend\ModuleManager\Feature,
-    Zend\EventManager\EventManager,
-    Zend\EventManager\EventInterface;
+use JwPersistentUser\Service\CookieAuthenticationService;
+use Zend\EventManager\EventInterface;
+use Zend\EventManager\EventManager;
+use Zend\ModuleManager\Feature;
 use Zend\ServiceManager\ServiceManager;
 
 class Module implements
@@ -33,6 +31,7 @@ class Module implements
 
         // Try to login from Cookie if applicable
         $service = new CookieAuthenticationService($sm);
+        $service->setEventManager($em);
         $service->loginFrom($request, $response);
     }
 
