@@ -88,8 +88,6 @@ class WriteToCookieTest extends TestCase
         $event = new AdapterChainEvent;
         $event->setIdentity(3);
 
-        $wrappedEvent = new Event('test', $event);
-
         $returnToken = new SerieToken(3, 'abc', 'def');
         $returnToken->setExpiresAt(new \DateTime('+3 days'));
 
@@ -102,7 +100,7 @@ class WriteToCookieTest extends TestCase
             ->method('writeSerie')
             ->with($this->response, $returnToken);
 
-        $this->listener->authenticate($wrappedEvent);
+        $this->listener->authenticate($event);
     }
 
     public function testLogout()

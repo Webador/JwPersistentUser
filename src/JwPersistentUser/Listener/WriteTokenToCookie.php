@@ -3,21 +3,14 @@
 namespace JwPersistentUser\Listener;
 
 use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\ContainerException;
 use JwPersistentUser\Service\CookieService;
 use JwPersistentUser\Service\RememberMeService;
-
-use Zend\EventManager\Event;
+use Zend\EventManager\SharedEventManagerInterface;
 use Zend\Http\Request;
 use Zend\Http\Response;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\Factory\DelegatorFactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
-use Zend\EventManager\SharedEventManagerInterface;
-
 use ZfcUser\Authentication\Adapter\AdapterChain;
 use ZfcUser\Authentication\Adapter\AdapterChainEvent;
 
@@ -73,10 +66,8 @@ class WriteTokenToCookie implements DelegatorFactoryInterface
         return $original;
     }
 
-    public function authenticate(Event $e)
+    public function authenticate(AdapterChainEvent $e)
     {
-        $e = $e->getTarget();
-
         if (!$this->isValidRequestAndResponse()) {
             return;
         }
@@ -86,10 +77,8 @@ class WriteTokenToCookie implements DelegatorFactoryInterface
         $this->getCookieService()->writeSerie($this->getResponse(), $serieToken);
     }
 
-    public function logout(Event $e)
+    public function logout(AdapterChainEvent $e)
     {
-        $e = $e->getTarget();
-
         if (!$this->isValidRequestAndResponse()) {
             return;
         }
