@@ -31,7 +31,7 @@ class Module implements
 
         // Try to login from Cookie if applicable
         $service = new CookieAuthenticationService($sm);
-        $service->setEventManager($em);
+        $service->setEventManager(new EventManager($em->getSharedManager()));
         $service->loginFrom($request, $response);
     }
 
