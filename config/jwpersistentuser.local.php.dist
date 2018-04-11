@@ -1,5 +1,6 @@
 <?php return [
     'jwpersistentuser' => [
-        'serieTokenEntityClass' => 'User\Model\SerieToken'
+        'serieTokenEntityClass' => 'User\Model\SerieToken',
+        'tokenRefreshedAfterLogin' => true,
     ]
 ];

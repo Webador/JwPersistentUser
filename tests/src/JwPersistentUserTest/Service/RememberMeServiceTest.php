@@ -90,6 +90,21 @@ class RememberMeServiceTest extends TestCase
         $nextSerie = $this->service->getNextInSerie($serie);
 
         $this->assertSame($serie, $nextSerie);
+        $this->assertEquals('def', $serie->getToken());
+
+        $this->assertDateTimeEquals(new \DateTime('+1 year'), $serie->getExpiresAt());
+    }
+
+    public function testGetNextSerieWhenRefreshEnabled()
+    {
+        $this->options->setTokenRefreshedAfterLogin(true);
+
+        $this->assumeSerie($serie = new SerieToken(3, 'abc', 'def'));
+        $serie->setExpiresAt(new \DateTime('tomorrow'));
+
+        $nextSerie = $this->service->getNextInSerie($serie);
+
+        $this->assertSame($serie, $nextSerie);
         $this->assertNotEquals('def', $serie->getToken());
 
         $this->assertDateTimeEquals(new \DateTime('+1 year'), $serie->getExpiresAt());
