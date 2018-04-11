@@ -82,8 +82,10 @@ class RememberMeServiceTest extends TestCase
         $this->service->removeSerie(3, 'abc');
     }
 
-    public function testGetNextSerie()
+    public function testGetNextSerieWhenRefreshDisabled()
     {
+        $this->options->setTokenRefreshedAfterLogin(false);
+
         $this->assumeSerie($serie = new SerieToken(3, 'abc', 'def'));
         $serie->setExpiresAt(new \DateTime('tomorrow'));
 
@@ -95,10 +97,8 @@ class RememberMeServiceTest extends TestCase
         $this->assertDateTimeEquals(new \DateTime('+1 year'), $serie->getExpiresAt());
     }
 
-    public function testGetNextSerieWhenRefreshEnabled()
+    public function testGetNextSerie()
     {
-        $this->options->setTokenRefreshedAfterLogin(true);
-
         $this->assumeSerie($serie = new SerieToken(3, 'abc', 'def'));
         $serie->setExpiresAt(new \DateTime('tomorrow'));
 
