@@ -76,9 +76,13 @@ class RememberMeService
             return null;
         }
 
-        // Generate new token in the serie
-        $matchingSerieToken->setToken($this->generateRandom());
+        if ($this->moduleOptions->isTokenRefreshedAfterLogin()) {
+            // Generate new token in the serie
+            $matchingSerieToken->setToken($this->generateRandom());
+        }
+
         $matchingSerieToken->setExpiresAt($this->getNewExpireDate());
+
         $this->getMapper()->persist($matchingSerieToken);
 
         return $matchingSerieToken;
