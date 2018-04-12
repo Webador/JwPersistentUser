@@ -52,12 +52,12 @@ class CookieService
      */
     public function writeNull(Response $response)
     {
-        $this->setCookie($response, new SetCookie(
+        $this->setCookie($response, $this->appendWithDefaultParameters(new SetCookie(
             self::COOKIE_NAME,
             null,
             time()  - 3600,
             '/'
-        ));
+        )));
     }
 
     /**
@@ -67,16 +67,22 @@ class CookieService
     public function writeSerie(Response $response, SerieTokenInterface $serieToken)
     {
         $serieRepresentation =
-                  $serieToken->getUserId() .
+            $serieToken->getUserId() .
             ':' . $serieToken->getSerie() .
             ':' . $serieToken->getToken();
 
-        $this->setCookie($response, new SetCookie(
+        $this->setCookie($response, $this->appendWithDefaultParameters(new SetCookie(
             self::COOKIE_NAME,
             $serieRepresentation,
             $serieToken->getExpiresAt()->getTimestamp(),
             '/'
-        ));
+        )));
+    }
+
+    private function appendWithDefaultParameters(SetCookie $header)
+    {
+        $header->setHttponly(true);
+        return $header;
     }
 
     /**

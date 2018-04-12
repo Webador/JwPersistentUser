@@ -79,6 +79,7 @@ class CookieServiceTest extends TestCase
         $this->assertEquals('JwPersistentUser', $cookie->getName());
         $this->assertDateTimeEquals(new \DateTime('-1 hour'), new \DateTime($cookie->getExpires()));
         $this->assertEquals('/', $cookie->getPath());
+        $this->assertTrue($cookie->isHttponly());
     }
 
     public function testWriteNull()
@@ -93,6 +94,7 @@ class CookieServiceTest extends TestCase
         $this->assertEquals('JwPersistentUser', $cookie->getName());
         $this->assertDateTimeEquals(new \DateTime('-1 hour'), new \DateTime($cookie->getExpires()));
         $this->assertEquals('/', $cookie->getPath());
+        $this->assertTrue($cookie->isHttponly());
     }
 
 
