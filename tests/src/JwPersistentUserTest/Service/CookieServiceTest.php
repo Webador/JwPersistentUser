@@ -40,7 +40,7 @@ class CookieServiceTest extends TestCase
 
         $result = $this->service->read($request, $response);
 
-        $this->assertFalse($response->getHeaders()->has('SetCookie'));
+        $this->assertFalse($response->getHeaders()->has('Set-Cookie'));
 
         $this->assertNotNull($result);
         $this->assertEquals(1, $result->getUserId());
@@ -73,8 +73,8 @@ class CookieServiceTest extends TestCase
 
         $this->assertNull($result);
 
-        $this->assertTrue($response->getHeaders()->has('SetCookie'));
-        $cookie = $response->getHeaders()->get('SetCookie')->current();
+        $this->assertTrue($response->getHeaders()->has('Set-Cookie'));
+        $cookie = $response->getHeaders()->get('Set-Cookie')->current();
         $this->assertInstanceOf('Zend\Http\Header\SetCookie', $cookie);
         $this->assertEquals('JwPersistentUser', $cookie->getName());
         $this->assertDateTimeEquals(new \DateTime('-1 hour'), new \DateTime($cookie->getExpires()));
@@ -88,8 +88,8 @@ class CookieServiceTest extends TestCase
 
         $this->service->writeNull($response);
 
-        $this->assertTrue($response->getHeaders()->has('SetCookie'));
-        $cookie = $response->getHeaders()->get('SetCookie')->current();
+        $this->assertTrue($response->getHeaders()->has('Set-Cookie'));
+        $cookie = $response->getHeaders()->get('Set-Cookie')->current();
         $this->assertInstanceOf('Zend\Http\Header\SetCookie', $cookie);
         $this->assertEquals('JwPersistentUser', $cookie->getName());
         $this->assertDateTimeEquals(new \DateTime('-1 hour'), new \DateTime($cookie->getExpires()));
@@ -106,8 +106,8 @@ class CookieServiceTest extends TestCase
 
         $this->service->writeSerie($response, $serie);
 
-        $this->assertTrue($response->getHeaders()->has('SetCookie'));
-        $cookie = $response->getHeaders()->get('SetCookie')->current();
+        $this->assertTrue($response->getHeaders()->has('Set-Cookie'));
+        $cookie = $response->getHeaders()->get('Set-Cookie')->current();
         $this->assertInstanceOf('Zend\Http\Header\SetCookie', $cookie);
         $this->assertEquals('JwPersistentUser', $cookie->getName());
         $this->assertEquals('3:abc:def', $cookie->getValue());
