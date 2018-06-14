@@ -8,17 +8,12 @@ use JwPersistentUser\Service\RememberMeService;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\Http\Request;
 use Zend\Http\Response;
-use Zend\ServiceManager\Factory\DelegatorFactoryInterface;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
-use ZfcUser\Authentication\Adapter\AdapterChain;
 use ZfcUser\Authentication\Adapter\AdapterChainEvent;
 
-class WriteTokenToCookie implements DelegatorFactoryInterface
+class WriteTokenToCookie
 {
-    /**
-     * @var []
-     */
     protected $sharedListeners = [];
 
     /**
@@ -26,44 +21,33 @@ class WriteTokenToCookie implements DelegatorFactoryInterface
      */
     protected $serviceLocator;
 
-    /**
-     * @var RequestInterface
-     */
-    protected $request;
-
-    /**
-     * @var ResponseInterface
-     */
-    protected $response;
-
-    /**
-     * @var RememberMeService
-     */
-    protected $rememberMeService;
-
-    /**
-     * @var CookieService
-     */
-    protected $cookieService;
-
-    public function __invoke(ContainerInterface $container, $name, callable $callback, array $options = null)
+    public function __construct(ContainerInterface $serviceLocator)
     {
-        $this->serviceLocator = $container;
+        $this->serviceLocator = $serviceLocator;
+    }
 
-        /** @var AdapterChain $original */
-        $original = call_user_func($callback);
-
-        $original->getEventManager()->attach(
+    public function attachShared(SharedEventManagerInterface $events)
+    {
+        $events->attach(
+            'ZfcUser\Authentication\Adapter\AdapterChain',
             'authenticate.success',
             [$this, 'authenticate']
         );
 
-        $original->getEventManager()->attach(
+        $events->attach(
+            'ZfcUser\Authentication\Adapter\AdapterChain',
             'logout',
             [$this, 'logout']
         );
+    }
 
-        return $original;
+    public function detachShared(SharedEventManagerInterface $events)
+    {
+        foreach ($this->sharedListeners as $key => $handle) {
+            if ($events->detach($handle[0], $handle[1])) {
+                unset($this->sharedListeners[$key]);
+            }
+        }
     }
 
     public function authenticate(AdapterChainEvent $e)
@@ -100,34 +84,12 @@ class WriteTokenToCookie implements DelegatorFactoryInterface
             && $this->getResponse() instanceof Response;
     }
 
-    public function detachShared(SharedEventManagerInterface $events)
-    {
-        foreach ($this->sharedListeners as $index => $listener) {
-            if ($events->detach($this->eventIdentifier, $listener)) {
-                unset($this->sharedListeners[$index]);
-            }
-        }
-    }
-
     /**
      * @return RememberMeService
      */
     public function getRememberMeService()
     {
-        if ($this->rememberMeService === null) {
-            $this->rememberMeService = $this->serviceLocator->get('JwPersistentUser\Service\RememberMe');
-        }
-        return $this->rememberMeService;
-    }
-
-    /**
-     * @param RememberMeService $rememberMeService
-     * @return $this
-     */
-    public function setRememberMeService($rememberMeService)
-    {
-        $this->rememberMeService = $rememberMeService;
-        return $this;
+        return $this->serviceLocator->get('JwPersistentUser\Service\RememberMe');
     }
 
     /**
@@ -135,21 +97,7 @@ class WriteTokenToCookie implements DelegatorFactoryInterface
      */
     public function getResponse()
     {
-        if (!$this->response) {
-            $this->response = $this->serviceLocator->get('Response');
-        }
-
-        return $this->response;
-    }
-
-    /**
-     * @param ResponseInterface $response
-     * @return $this
-     */
-    public function setResponse($response)
-    {
-        $this->response = $response;
-        return $this;
+        return $this->serviceLocator->get('Response');
     }
 
     /**
@@ -157,21 +105,7 @@ class WriteTokenToCookie implements DelegatorFactoryInterface
      */
     public function getRequest()
     {
-        if (!$this->request) {
-            $this->request = $this->serviceLocator->get('Request');
-        }
-
-        return $this->request;
-    }
-
-    /**
-     * @param RequestInterface $request
-     * @return $this
-     */
-    public function setRequest($request)
-    {
-        $this->request = $request;
-        return $this;
+        return $this->serviceLocator->get('Request');
     }
 
     /**
@@ -179,19 +113,6 @@ class WriteTokenToCookie implements DelegatorFactoryInterface
      */
     public function getCookieService()
     {
-        if ($this->cookieService === null) {
-            $this->cookieService = $this->serviceLocator->get('JwPersistentUser\Service\Cookie');
-        }
-        return $this->cookieService;
-    }
-
-    /**
-     * @param CookieService $cookieService
-     * @return $this
-     */
-    public function setCookieService($cookieService)
-    {
-        $this->cookieService = $cookieService;
-        return $this;
+        return $this->serviceLocator->get('JwPersistentUser\Service\Cookie');
     }
 }

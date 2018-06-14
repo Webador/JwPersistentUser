@@ -2,6 +2,7 @@
 
 namespace JwPersistentUser;
 
+use JwPersistentUser\Listener\WriteTokenToCookie;
 use JwPersistentUser\Service\CookieAuthenticationService;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManager;
@@ -33,6 +34,8 @@ class Module implements
         $service = new CookieAuthenticationService($sm);
         $service->setEventManager(new EventManager($em->getSharedManager()));
         $service->loginFrom($request, $response);
+
+        (new WriteTokenToCookie($sm))->attachShared($em->getSharedManager());
     }
 
     public function getAutoloaderConfig()

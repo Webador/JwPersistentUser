@@ -12,6 +12,7 @@ use Zend\EventManager\Event;
 use Zend\Http\Request;
 use Zend\Http\Response;
 
+use Zend\ServiceManager\ServiceManager;
 use ZfcUser\Authentication\Adapter\AdapterChainEvent;
 
 class WriteToCookieTest extends TestCase
@@ -20,6 +21,11 @@ class WriteToCookieTest extends TestCase
      * @var WriteTokenToCookie
      */
     protected $listener;
+
+    /**
+     * @var ServiceManager
+     */
+    protected $serviceManager;
 
     /**
      * @var RememberMeService
@@ -45,16 +51,22 @@ class WriteToCookieTest extends TestCase
     {
         parent::setUp();
 
-        $this->listener = new WriteTokenToCookie;
-
-        $this->listener->setRequest($this->request = new Request);
-        $this->listener->setResponse($this->response = new Response);
-
+        $this->request = new Request;
+        $this->response = new Response;
         $this->rememberMeService = $this->getMock('JwPersistentUser\Service\RememberMeService');
-        $this->listener->setRememberMeService($this->rememberMeService);
-
         $this->cookieService = $this->getMock('JwPersistentUser\Service\CookieService');
-        $this->listener->setCookieService($this->cookieService);
+
+        $this->serviceManager = new ServiceManager([
+            'services' => [
+                'JwPersistentUser\Service\RememberMe' => $this->rememberMeService,
+                'Request' => $this->request,
+                'Response' => $this->response,
+                'JwPersistentUser\Service\Cookie' => $this->cookieService,
+            ]
+        ]);
+        $this->serviceManager->setAllowOverride(true);
+
+        $this->listener = new WriteTokenToCookie($this->serviceManager);
     }
 
     /**
@@ -62,7 +74,7 @@ class WriteToCookieTest extends TestCase
      */
     public function testDoesNotActOnNonHttpRequest($method)
     {
-        $this->listener->setRequest($this->getMock('Zend\StdLib\RequestInterface'));
+        $this->serviceManager->setService('Request', $this->getMock('Zend\StdLib\RequestInterface'));
 
         $this->rememberMeService->expects($this->never())
             ->method('createNew');
@@ -73,9 +85,9 @@ class WriteToCookieTest extends TestCase
     /**
      * @dataProvider methods
      */
-    public function testDoesNotActOnNonHttpRespose($method)
+    public function testDoesNotActOnNonHttpResponse($method)
     {
-        $this->listener->setResponse($this->getMock('Zend\StdLib\ResponseInterface'));
+        $this->serviceManager->setService('Response', $this->getMock('Zend\StdLib\ResponseInterface'));
 
         $this->rememberMeService->expects($this->never())
             ->method('createNew');
