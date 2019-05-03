@@ -8,7 +8,7 @@ return [
             'JwPersistentUser\Service\Cookie' => 'JwPersistentUser\Service\CookieServiceFactory',
             'JwPersistentUser\Service\UserAlwaysValid' => \Zend\ServiceManager\Factory\InvokableFactory::class,
         ],
-        'alias' => [
+        'aliases' => [
             'JwPersistentUser\UserValidity' => 'JwPersistentUser\Service\UserAlwaysValid',
         ],
     ],
