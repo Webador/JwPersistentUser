@@ -10,9 +10,6 @@ use JwPersistentUser\Mapper\SerieTokenMapperInterface;
 
 class RememberMeServiceTest extends TestCase
 {
-    const IP = '1.2.3.4';
-    const USER_AGENT = 'Mozilla /w IE & Chrome';
-
     /**
      * @var RememberMeService
      */
