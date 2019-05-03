@@ -8,8 +8,6 @@ use JwPersistentUser\Model\ModuleOptions;
 use JwPersistentUser\Service\RememberMeService;
 use JwPersistentUser\Mapper\SerieTokenMapperInterface;
 
-use Zend\Http\Header\UserAgent;
-
 class RememberMeServiceTest extends TestCase
 {
     const IP = '1.2.3.4';
@@ -41,19 +39,6 @@ class RememberMeServiceTest extends TestCase
 
         $this->service->setModuleOptions($this->options = new ModuleOptions);
         $this->options->setSerieTokenEntityClass('JwPersistentUser\Model\SerieToken');
-
-        $ipService = $this->getMock('Zend\Http\PhpEnvironment\RemoteAddress');
-        $ipService->expects($this->any())
-            ->method('getIpAddress')
-            ->will($this->returnValue(self::IP));
-        $this->service->setIpService($ipService);
-
-        $request = $this->getMock('Zend\Http\Request');
-        $request->expects($this->any())
-            ->method('getHeader')
-            ->with('UserAgent')
-            ->will($this->returnValue(new UserAgent(self::USER_AGENT)));
-        $this->service->setRequest($request);
     }
 
     public function testCreateNew()
@@ -66,8 +51,6 @@ class RememberMeServiceTest extends TestCase
         $this->assertEquals(3, $response->getUserId());
         $this->assertEquals(10, strlen($response->getSerie()));
         $this->assertEquals(10, strlen($response->getToken()));
-        $this->assertEquals(self::IP, $response->getIpAddress());
-        $this->assertEquals(self::USER_AGENT, $response->getUserAgent());
     }
 
     public function testRemoveSerie()

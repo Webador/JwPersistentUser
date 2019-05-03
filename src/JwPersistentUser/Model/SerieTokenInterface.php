@@ -43,24 +43,4 @@ interface SerieTokenInterface
      * @param \DateTime $expiresAt
      */
     public function setExpiresAt($expiresAt);
-
-    /**
-     * @return string
-     */
-    public function getIpAddress();
-
-    /**
-     * @param string $ipAddress
-     */
-    public function setIpAddress($ipAddress);
-
-    /**
-     * @return string
-     */
-    public function getUserAgent();
-
-    /**
-     * @param string $userAgent
-     */
-    public function setUserAgent($userAgent);
 }

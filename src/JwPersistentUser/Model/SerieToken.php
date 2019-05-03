@@ -25,16 +25,6 @@ class SerieToken implements SerieTokenInterface
     protected $expiresAt;
 
     /**
-     * @var string
-     */
-    protected $ipAddress;
-
-    /**
-     * @var string
-     */
-    protected $userAgent;
-
-    /**
      * @param null|int $userId
      * @param null|string $serie
      * @param null|string $token
@@ -84,25 +74,5 @@ class SerieToken implements SerieTokenInterface
     public function setExpiresAt($expiresAt)
     {
         $this->expiresAt = $expiresAt;
-    }
-
-    public function getIpAddress()
-    {
-        return $this->ipAddress;
-    }
-
-    public function setIpAddress($ipAddress)
-    {
-        $this->ipAddress = $ipAddress;
-    }
-
-    public function setUserAgent($userAgent)
-    {
-        $this->userAgent = $userAgent;
-    }
-
-    public function getUserAgent()
-    {
-        return $this->userAgent;
     }
 }

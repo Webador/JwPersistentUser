@@ -13,8 +13,6 @@ class RememberMeServiceFactory implements FactoryInterface
     {
         $service = new RememberMeService;
 
-        $service->setIpService(new RemoteAddress);
-        $service->setRequest($container->get('Request'));
         $service->setModuleOptions($container->get('JwPersistentUser\ModuleOptions'));
         $service->setMapper($container->get('JwPersistentUser\Mapper\SerieToken'));
 
