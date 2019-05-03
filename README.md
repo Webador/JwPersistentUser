@@ -28,3 +28,7 @@
        ]
    ];
    ```
+
+## Configuration
+
+You can tweak the setting found described in `vendor/jouwweb/jw-persistent-user/config/jwpersistentuser.local.php.dist`.

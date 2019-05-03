@@ -2,5 +2,11 @@
     'jwpersistentuser' => [
         'serieTokenEntityClass' => 'User\Model\SerieToken',
         'tokenRefreshedAfterLogin' => true,
-    ]
+    ],
+    'service_manager' => [
+        'alias' => [
+            // Configure this library to use another strategy for writing serie validity
+            'JwPersistentUser\UserValidity' => 'Some\Custom\User\Validity\Writer',
+        ],
+    ],
 ];

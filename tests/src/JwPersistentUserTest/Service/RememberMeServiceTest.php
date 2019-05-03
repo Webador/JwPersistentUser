@@ -7,6 +7,7 @@ use JwPersistentUser\Model\SerieToken;
 use JwPersistentUser\Model\ModuleOptions;
 use JwPersistentUser\Service\RememberMeService;
 use JwPersistentUser\Mapper\SerieTokenMapperInterface;
+use JwPersistentUser\Service\UserValidityInterface;
 
 class RememberMeServiceTest extends TestCase
 {
@@ -16,14 +17,19 @@ class RememberMeServiceTest extends TestCase
     protected $service;
 
     /**
-     * @var SerieTokenMapperInterface
+     * @var SerieTokenMapperInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mapper;
 
     /**
-     * @var ModuleOptions
+     * @var ModuleOptions|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $options;
+
+    /**
+     * @var UserValidityInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $userValidityInterface;
 
     public function setUp()
     {
@@ -34,6 +40,9 @@ class RememberMeServiceTest extends TestCase
         $this->mapper = $this->getMock('JwPersistentUser\Mapper\SerieTokenMapperInterface');
         $this->service->setMapper($this->mapper);
 
+        $this->userValidityInterface = $this->getMock(UserValidityInterface::class);
+        $this->service->setUserValidityInterface($this->userValidityInterface);
+
         $this->service->setModuleOptions($this->options = new ModuleOptions);
         $this->options->setSerieTokenEntityClass('JwPersistentUser\Model\SerieToken');
     }
@@ -43,11 +52,40 @@ class RememberMeServiceTest extends TestCase
         $this->mapper->expects($this->once())
             ->method('persist');
 
+        $this
+            ->userValidityInterface
+            ->expects($this->any())
+            ->method('getValidUntilForUser')
+            ->with(3)
+            ->willReturn(null);
+
         $response = $this->service->createNew(3);
 
         $this->assertEquals(3, $response->getUserId());
         $this->assertEquals(10, strlen($response->getSerie()));
         $this->assertEquals(10, strlen($response->getToken()));
+        $this->assertNull($response->getValidUntil());
+    }
+
+    public function testCreateNewWithValidity()
+    {
+        $this->mapper->expects($this->once())
+            ->method('persist');
+
+        $validUntil = new \DateTime('tomorrow');
+        $this
+            ->userValidityInterface
+            ->expects($this->any())
+            ->method('getValidUntilForUser')
+            ->with(3)
+            ->willReturn($validUntil);
+
+        $response = $this->service->createNew(3);
+
+        $this->assertEquals(3, $response->getUserId());
+        $this->assertEquals(10, strlen($response->getSerie()));
+        $this->assertEquals(10, strlen($response->getToken()));
+        $this->assertEquals($validUntil, $response->getValidUntil());
     }
 
     public function testRemoveSerie()

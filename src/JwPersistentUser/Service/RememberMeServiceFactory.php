@@ -15,6 +15,7 @@ class RememberMeServiceFactory implements FactoryInterface
 
         $service->setModuleOptions($container->get('JwPersistentUser\ModuleOptions'));
         $service->setMapper($container->get('JwPersistentUser\Mapper\SerieToken'));
+        $service->setUserValidityInterface($container->get('JwPersistentUser\UserValidity'));
 
         return $service;
     }

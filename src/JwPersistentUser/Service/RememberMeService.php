@@ -21,6 +21,11 @@ class RememberMeService
     protected $moduleOptions;
 
     /**
+     * @var UserValidityInterface
+     */
+    protected $userValidityInterface;
+
+    /**
      * @param int $userId
      * @return SerieTokenInterface
      */
@@ -34,6 +39,7 @@ class RememberMeService
         $serieToken->setSerie($this->generateRandom());
         $serieToken->setToken($this->generateRandom());
         $serieToken->setExpiresAt($this->getNewExpireDate());
+        $serieToken->setValidUntil($this->getUserValidityInterface()->getValidUntilForUser($userId));
 
         $this->getMapper()->persist($serieToken);
 
@@ -133,6 +139,24 @@ class RememberMeService
     public function setModuleOptions($moduleOptions)
     {
         $this->moduleOptions = $moduleOptions;
+        return $this;
+    }
+
+    /**
+     * @return UserValidityInterface
+     */
+    public function getUserValidityInterface()
+    {
+        return $this->userValidityInterface;
+    }
+
+    /**
+     * @param UserValidityInterface $userValidityInterface
+     * @return $this
+     */
+    public function setUserValidityInterface($userValidityInterface)
+    {
+        $this->userValidityInterface = $userValidityInterface;
         return $this;
     }
 }
