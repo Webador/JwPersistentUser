@@ -125,6 +125,17 @@ class RememberMeServiceTest extends TestCase
         $this->assertNull($nextSerie);
     }
 
+    public function testNoLongerValidTokenResets()
+    {
+        $this->assumeSerie($serie = new SerieToken(3, 'abc', 'def'));
+        $serie->setExpiresAt(new \DateTime('tomorrow'));
+        $serie->setValidUntil(new \DateTime('yesterday'));
+
+        $nextSerie = $this->service->getNextInSerie($serie);
+
+        $this->assertNull($nextSerie);
+    }
+
     /**
      * @param SerieToken $serie
      */

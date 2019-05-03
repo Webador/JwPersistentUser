@@ -49,6 +49,8 @@ class RememberMeService
         $matchingSerieToken = $this->getMapper()->find($serieToken->getUserId(), $serieToken->getSerie());
         if (!$matchingSerieToken) {
             return null;
+        } else if ($matchingSerieToken->getValidUntil() && $matchingSerieToken->getValidUntil() < new \DateTime) {
+            return null;
         } elseif (!$matchingSerieToken->getExpiresAt() || $matchingSerieToken->getExpiresAt() < new \DateTime) {
             return null;
         } elseif ($matchingSerieToken->getToken() !== $serieToken->getToken()) {

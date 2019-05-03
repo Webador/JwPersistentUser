@@ -35,6 +35,9 @@ interface SerieTokenInterface
     public function setUserId($userId);
 
     /**
+     * The cookie will expire at this date. We should make sure to renew the cookie when this serie is used before that
+     * time.
+     *
      * @return \DateTime
      */
     public function getExpiresAt();
@@ -43,4 +46,18 @@ interface SerieTokenInterface
      * @param \DateTime $expiresAt
      */
     public function setExpiresAt($expiresAt);
+
+    /**
+     * This serie is no longer valid after this date.
+     *
+     * If `null`, this serie can stay valid forever.
+     *
+     * @return \DateTime|null
+     */
+    public function getValidUntil();
+
+    /**
+     * @param \DateTime|null $validUntil
+     */
+    public function setValidUntil($validUntil);
 }
