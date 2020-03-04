@@ -75,7 +75,13 @@ class CookieService
             self::COOKIE_NAME,
             $serieRepresentation,
             $serieToken->getExpiresAt()->getTimestamp(),
-            '/'
+            $this->getModuleOptions()->getCookiePath(),
+            $this->getModuleOptions()->getCookieDomain(),
+            $this->getModuleOptions()->getCookieSecure(),
+            $this->getModuleOptions()->getCookieHttpOnly(),
+            $this->getModuleOptions()->getCookieMaxAge(),
+            $this->getModuleOptions()->getCookieVersion(),
+            $this->getModuleOptions()->getCookieSameSite()
         )));
     }
 

@@ -2,6 +2,15 @@
     'jwpersistentuser' => [
         'serieTokenEntityClass' => 'User\Model\SerieToken',
         'tokenRefreshedAfterLogin' => true,
+
+        // One can configure a cookie using the following values:
+        // 'cookiePath' => null,
+        // 'cookieDomain' => null,
+        // 'cookieSecure' => null,
+        // 'cookieHttpOnly' => null,
+        // 'cookieMaxAge' => null,
+        // 'cookieVersion' => null,
+        // 'cookieSameSite' => null,
     ],
     'service_manager' => [
         'aliases' => [

@@ -14,6 +14,11 @@ use JwPersistentUser\Service\CookieService;
 class CookieServiceTest extends TestCase
 {
     /**
+     * @var ModuleOptions
+     */
+    private $options;
+
+    /**
      * @var CookieService
      */
     protected $service;
@@ -22,9 +27,9 @@ class CookieServiceTest extends TestCase
     {
         $this->service = new CookieService;
 
-        $options = new ModuleOptions;
-        $options->setSerieTokenEntityClass('JwPersistentUser\Model\SerieToken');
-        $this->service->setModuleOptions($options);
+        $this->options = new ModuleOptions;
+        $this->options->setSerieTokenEntityClass('JwPersistentUser\Model\SerieToken');
+        $this->service->setModuleOptions($this->options);
     }
 
     public function testReadSerie()
@@ -97,7 +102,6 @@ class CookieServiceTest extends TestCase
         $this->assertTrue($cookie->isHttponly());
     }
 
-
     public function testWriteSerie()
     {
         $serie = new SerieToken(3, 'abc', 'def');
@@ -113,5 +117,36 @@ class CookieServiceTest extends TestCase
         $this->assertEquals('3:abc:def', $cookie->getValue());
         $this->assertDateTimeEquals(new \DateTime('+1 year'), new \DateTime($cookie->getExpires()));
         $this->assertEquals('/', $cookie->getPath());
+        $this->assertEquals(null, $cookie->getSameSite());
+        $this->assertNull($cookie->isSecure());
+    }
+
+    public function testWithCustomCookieOptions()
+    {
+        $this->options->setCookiePath('/foo');
+        $this->options->setCookieDomain('bla.nl');
+        $this->options->setCookieHttpOnly(true);
+        $this->options->setCookieSameSite('none');
+        $this->options->setCookieSecure(true);
+        $this->options->setCookieVersion(3);
+        $this->options->setCookieMaxAge(300);
+
+        $serie = new SerieToken(3, 'abc', 'def');
+        $serie->setExpiresAt(new \DateTime('+1 year'));
+        $response = new Response;
+
+        $this->service->writeSerie($response, $serie);
+
+        $this->assertTrue($response->getHeaders()->has('Set-Cookie'));
+        $cookie = $response->getHeaders()->get('Set-Cookie')->current();
+        $this->assertInstanceOf('Zend\Http\Header\SetCookie', $cookie);
+
+        $this->assertEquals('/foo', $cookie->getPath());
+        $this->assertEquals('bla.nl', $cookie->getDomain());
+        $this->assertTrue($cookie->isHttpOnly());
+        $this->assertEquals('None', $cookie->getSameSite());
+        $this->assertEquals(300, $cookie->getMaxAge());
+        $this->assertEquals(3, $cookie->getVersion());
+        $this->assertTrue($cookie->isSecure());
     }
 }
