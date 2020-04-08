@@ -96,6 +96,14 @@ class RememberMeService
         }
     }
 
+    public function removeAllSeries(int $userId)
+    {
+        $serieTokens = $this->getMapper()->findAllByUser($userId);
+        foreach ($serieTokens as $serieToken) {
+            $this->getMapper()->remove($serieToken);
+        }
+    }
+
     /**
      * @note Should NOT contain semicolons.
      *

@@ -19,6 +19,12 @@ interface SerieTokenMapperInterface
     public function find($userId, $serieId);
 
     /**
+     * @param int $userId
+     * @return mixed
+     */
+    public function findAllByUser(int $userId);
+
+    /**
      * @param SerieTokenInterface $token
      */
     public function remove(SerieTokenInterface $token);
